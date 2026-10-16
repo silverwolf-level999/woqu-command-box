@@ -10,8 +10,9 @@ interface AppHeaderProps {
 export const AppHeader: React.FC<AppHeaderProps> = ({ subtitle, children }) => {
   return (
     <div className="flex flex-col gap-2">
-      <h1 className="text-4xl font-bold text-light-text dark:text-dark-text flex items-baseline gap-2">
-        <Link to="/" className="hover:opacity-80 transition-opacity cursor-pointer">
+      <h1 className="text-4xl font-bold text-light-text dark:text-dark-text flex items-center gap-2">
+        <Link to="/" className="inline-flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer">
+          <img src="/logo192.png" alt="" className="h-10 w-10 shrink-0" />
           WOQU command-box
         </Link>
         <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary">v{APP_VERSION}</span>
