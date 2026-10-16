@@ -4,6 +4,17 @@
     "deactivate": "Disattiva Utente",
     "delete": "Cancella Utente"
   },
+  "createUser": {
+    "button": "Crea utente",
+    "title": "Crea utente interno",
+    "description": "Dopo aver creato l'account, comunica in modo sicuro il nome utente e la password iniziale.",
+    "username": "Nome utente",
+    "usernameHint": "Da 3 a 30 caratteri; usa lettere, numeri, trattini bassi o trattini.",
+    "password": "Password iniziale",
+    "passwordHint": "La password è obbligatoria.",
+    "creating": "Creazione…",
+    "submit": "Crea"
+  },
   "columns": {
     "labels": {
       "actions": "Azioni",
@@ -25,6 +36,7 @@
   "entityName_many": "utenti",
   "entityName_other": "utenti",
   "error": {
+    "create": { "default": "Impossibile creare l'utente" },
     "delete": {
       "default": "Errore cancellazione utente"
     },
@@ -50,6 +62,7 @@
     "inactive": "Disattivo"
   },
   "success": {
+    "create": { "default": "Utente creato correttamente" },
     "delete": {
       "default": "Utente cancellato con successo"
     },

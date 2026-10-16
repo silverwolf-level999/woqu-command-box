@@ -8,8 +8,8 @@ class UserService {
         throw new Error('Username must be between 3 and 30 characters');
       }
 
-      if (!password || password.length < 8) {
-        throw new Error('Password must be at least 8 characters');
+      if (!password) {
+        throw new Error('Password is required');
       }
 
       if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
@@ -59,9 +59,9 @@ class UserService {
 
   async changePassword(userId, currentPassword, newPassword) {
     try {
-      // Validate new password
-      if (!newPassword || newPassword.length < 8) {
-        throw new Error('New password must be at least 8 characters');
+      // Passwords must be non-empty, but have no minimum length requirement.
+      if (!newPassword) {
+        throw new Error('New password is required');
       }
 
       // Get user to verify current password

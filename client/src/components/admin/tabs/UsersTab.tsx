@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Trash2, ToggleLeft, ToggleRight } from 'lucide-react';
+import { Trash2, ToggleLeft, ToggleRight, UserPlus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { adminApi } from '../../../utils/api/admin';
 import { useToast } from '../../../hooks/useToast';
 import { ConfirmationModal } from '../../common/modals/ConfirmationModal';
+import Modal from '../../common/modals/Modal';
 import { useDebounce } from '../../../hooks/useDebounce';
 import {
   FilterInput,
@@ -25,6 +26,9 @@ export const UsersTab: React.FC = () => {
   const [isActive, setIsActive] = useState('');
   const [offset, setOffset] = useState(0);
   const [deleteUserId, setDeleteUserId] = useState<number | null>(null);
+  const [showCreateUser, setShowCreateUser] = useState(false);
+  const [newUsername, setNewUsername] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const limit = 50;
 
   const debouncedSearch = useDebounce(search, 300);
@@ -66,6 +70,29 @@ export const UsersTab: React.FC = () => {
       addToast(error.message || translate('error.update.default'), 'error');
     },
   });
+
+  const createUserMutation = useMutation({
+    mutationFn: () => adminApi.createUser(newUsername, newPassword),
+    onSuccess: () => {
+      addToast(translate('success.create.default'), 'success');
+      queryClient.invalidateQueries({ queryKey: ['admin', 'users'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'stats'] });
+      setOffset(0);
+      setShowCreateUser(false);
+      setNewUsername('');
+      setNewPassword('');
+    },
+    onError: (error: any) => {
+      addToast(error.message || translate('error.create.default'), 'error');
+    },
+  });
+
+  const closeCreateUserModal = () => {
+    if (createUserMutation.isPending) return;
+    setShowCreateUser(false);
+    setNewUsername('');
+    setNewPassword('');
+  };
 
   const users = data?.users || [];
   const total = data?.total || 0;
@@ -194,6 +221,17 @@ export const UsersTab: React.FC = () => {
 
   return (
     <div className="space-y-4">
+      <div className="flex justify-end">
+        <button
+          type="button"
+          onClick={() => setShowCreateUser(true)}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-light-primary dark:bg-dark-primary text-white rounded-md hover:opacity-90"
+        >
+          <UserPlus className="w-4 h-4" />
+          {translate('createUser.button')}
+        </button>
+      </div>
+
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-4">
         <FilterInput
@@ -250,6 +288,78 @@ export const UsersTab: React.FC = () => {
         onPrevious={() => setOffset(Math.max(0, offset - limit))}
         onNext={() => setOffset(offset + limit)}
       />
+
+      <Modal
+        isOpen={showCreateUser}
+        onClose={closeCreateUserModal}
+        title={translate('createUser.title')}
+        width="max-w-md"
+      >
+        <form
+          className="space-y-4"
+          onSubmit={(event) => {
+            event.preventDefault();
+            createUserMutation.mutate();
+          }}
+        >
+          <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+            {translate('createUser.description')}
+          </p>
+          <div>
+            <label htmlFor="admin-create-username" className="block mb-1 text-sm text-light-text dark:text-dark-text">
+              {translate('createUser.username')}
+            </label>
+            <input
+              id="admin-create-username"
+              autoComplete="off"
+              required
+              minLength={3}
+              maxLength={30}
+              pattern="[a-zA-Z0-9_-]+"
+              value={newUsername}
+              onChange={(event) => setNewUsername(event.target.value)}
+              className="w-full px-3 py-2 rounded-md bg-light-bg dark:bg-dark-bg border border-light-border dark:border-dark-border text-light-text dark:text-dark-text"
+            />
+            <p className="mt-1 text-xs text-light-text-secondary dark:text-dark-text-secondary">
+              {translate('createUser.usernameHint')}
+            </p>
+          </div>
+          <div>
+            <label htmlFor="admin-create-password" className="block mb-1 text-sm text-light-text dark:text-dark-text">
+              {translate('createUser.password')}
+            </label>
+            <input
+              id="admin-create-password"
+              type="password"
+              autoComplete="new-password"
+              required
+              value={newPassword}
+              onChange={(event) => setNewPassword(event.target.value)}
+              className="w-full px-3 py-2 rounded-md bg-light-bg dark:bg-dark-bg border border-light-border dark:border-dark-border text-light-text dark:text-dark-text"
+            />
+            <p className="mt-1 text-xs text-light-text-secondary dark:text-dark-text-secondary">
+              {translate('createUser.passwordHint')}
+            </p>
+          </div>
+          <div className="flex justify-end gap-2 pt-2">
+            <button
+              type="button"
+              onClick={closeCreateUserModal}
+              disabled={createUserMutation.isPending}
+              className="px-3 py-2 rounded-md bg-light-bg dark:bg-dark-bg text-light-text dark:text-dark-text hover:opacity-80 disabled:opacity-50"
+            >
+              {t('action.cancel')}
+            </button>
+            <button
+              type="submit"
+              disabled={createUserMutation.isPending}
+              className="px-3 py-2 rounded-md bg-light-primary dark:bg-dark-primary text-white hover:opacity-90 disabled:opacity-50"
+            >
+              {createUserMutation.isPending ? translate('createUser.creating') : translate('createUser.submit')}
+            </button>
+          </div>
+        </form>
+      </Modal>
 
       {/* Delete Confirmation Modal */}
       <ConfirmationModal

@@ -2,6 +2,9 @@ import express from 'express';
 import adminRepository from '../repositories/adminRepository.js';
 import badWordsChecker from '../utils/badWords.js';
 import Logger from '../logger.js';
+import userService from '../services/userService.js';
+import { DISABLE_INTERNAL_ACCOUNTS } from '../middleware/auth.js';
+import { isAdmin } from '../middleware/adminAuth.js';
 
 const router = express.Router();
 
@@ -17,6 +20,39 @@ router.get('/stats', async (req, res) => {
 });
 
 // User management
+router.post('/users', async (req, res) => {
+  if (DISABLE_INTERNAL_ACCOUNTS) {
+    return res.status(403).json({ message: 'Internal accounts are disabled' });
+  }
+
+  try {
+    const { username, password } = req.body;
+    const user = await userService.createUser(username, password);
+    res.status(201).json({
+      ...user,
+      is_admin: isAdmin(user.username),
+    });
+  } catch (error) {
+    const validationErrors = new Set([
+      'Username must be between 3 and 30 characters',
+      'Password is required',
+      'Username can only contain letters, numbers, underscores, and hyphens',
+      'Username already exists',
+    ]);
+    const status = error.message === 'Username already exists'
+      ? 409
+      : validationErrors.has(error.message) ? 400 : 500;
+    if (status === 500) {
+      Logger.error('Admin user creation failed:', error);
+    } else {
+      Logger.debug('Admin user creation rejected:', error.message);
+    }
+    res.status(status).json({
+      message: status === 500 ? 'Failed to create user' : error.message,
+    });
+  }
+});
+
 router.get('/users', async (req, res) => {
   try {
     const { offset = 0, limit = 50, search = '', authType = '', isActive = '' } = req.query;

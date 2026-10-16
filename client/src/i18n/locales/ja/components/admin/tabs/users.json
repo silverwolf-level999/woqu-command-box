@@ -4,6 +4,17 @@
     "deactivate": "ユーザーを無効化",
     "delete": "ユーザーを削除"
   },
+  "createUser": {
+    "button": "ユーザーを作成",
+    "title": "内部ユーザーを作成",
+    "description": "アカウント作成後、ユーザー名と初期パスワードを安全な方法で本人に伝えてください。",
+    "username": "ユーザー名",
+    "usernameHint": "3～30文字。英字、数字、アンダースコア、ハイフンを使用できます。",
+    "password": "初期パスワード",
+    "passwordHint": "パスワードは必須です。",
+    "creating": "作成中…",
+    "submit": "作成"
+  },
   "columns": {
     "labels": {
       "actions": "アクション",
@@ -24,6 +35,7 @@
   "entityName_one": "ユーザー",
   "entityName_other": "ユーザー",
   "error": {
+    "create": { "default": "ユーザーの作成に失敗しました" },
     "delete": {
       "default": "ユーザーの削除に失敗しました"
     },
@@ -49,6 +61,7 @@
     "inactive": "無効"
   },
   "success": {
+    "create": { "default": "ユーザーを作成しました" },
     "delete": {
       "default": "ユーザーを削除しました"
     },

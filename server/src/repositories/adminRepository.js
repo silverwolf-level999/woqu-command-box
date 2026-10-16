@@ -1,5 +1,6 @@
 import { getDb } from '../config/database.js';
 import Logger from '../logger.js';
+import { isAdmin } from '../middleware/adminAuth.js';
 
 async function count(db, sql, params = []) {
   return (await db.get(sql, params)).count;
@@ -83,7 +84,13 @@ class AdminRepository {
       const users = await db.all(query, [...filterParams, limit, offset]);
       const total = await count(db, countQuery, filterParams);
 
-      return { users, total };
+      return {
+        users: users.map((user) => ({
+          ...user,
+          is_admin: isAdmin(user.username),
+        })),
+        total,
+      };
     } catch (error) {
       Logger.error('Error getting all users:', error);
       throw error;
@@ -109,6 +116,7 @@ class AdminRepository {
 
       return {
         ...user,
+        is_admin: isAdmin(user.username),
         snippet_count: snippetCount,
         api_key_count: apiKeyCount
       };

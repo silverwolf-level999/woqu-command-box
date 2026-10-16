@@ -4,6 +4,17 @@
     "deactivate": "Inhabilitar usuario",
     "delete": "Borrar usuario"
   },
+  "createUser": {
+    "button": "Crear usuario",
+    "title": "Crear usuario interno",
+    "description": "Después de crear la cuenta, comparte el nombre de usuario y la contraseña inicial de forma segura.",
+    "username": "Usuario",
+    "usernameHint": "De 3 a 30 caracteres; letras, números, guiones bajos o guiones.",
+    "password": "Contraseña inicial",
+    "passwordHint": "La contraseña es obligatoria.",
+    "creating": "Creando…",
+    "submit": "Crear"
+  },
   "columns": {
     "labels": {
       "actions": "Eventos",
@@ -25,6 +36,7 @@
   "entityName_many": "usuarios",
   "entityName_other": "usuarios",
   "error": {
+    "create": { "default": "No se pudo crear el usuario" },
     "delete": {
       "default": "No se pudo borrar al usuario"
     },
@@ -50,6 +62,7 @@
     "inactive": "Inactivo"
   },
   "success": {
+    "create": { "default": "Usuario creado correctamente" },
     "delete": {
       "default": "El usuario ya no existe"
     },

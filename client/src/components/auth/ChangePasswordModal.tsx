@@ -35,11 +35,6 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
       return;
     }
 
-    if (newPassword.length < 8) {
-      addToast(translate('changePasswordModal.error.newPasswordMustBeAtLeastCharacters', { minLength: 8 }), 'error');
-      return;
-    }
-
     setIsLoading(true);
     
     try {
@@ -114,7 +109,6 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
                   bg-light-surface dark:bg-dark-surface text-light-text dark:text-dark-text
                   focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
-                minLength={8}
                 disabled={isLoading}
               />
               <button
@@ -141,7 +135,6 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
                   bg-light-surface dark:bg-dark-surface text-light-text dark:text-dark-text
                   focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
-                minLength={8}
                 disabled={isLoading}
               />
               <button
@@ -178,4 +171,4 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
         </form>
       </Modal>
     );
-}; 
+};

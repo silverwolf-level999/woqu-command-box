@@ -4,6 +4,17 @@
     "deactivate": "Nonaktifkan pengguna",
     "delete": "Hapus pengguna"
   },
+  "createUser": {
+    "button": "Buat pengguna",
+    "title": "Buat pengguna internal",
+    "description": "Setelah membuat akun, sampaikan nama pengguna dan kata sandi awal dengan aman.",
+    "username": "Nama pengguna",
+    "usernameHint": "3–30 karakter; gunakan huruf, angka, garis bawah, atau tanda hubung.",
+    "password": "Kata sandi awal",
+    "passwordHint": "Kata sandi wajib diisi.",
+    "creating": "Membuat…",
+    "submit": "Buat"
+  },
   "columns": {
     "labels": {
       "actions": "Aksi",
@@ -24,6 +35,7 @@
   "entityName_one": "pengguna",
   "entityName_other": "pengguna",
   "error": {
+    "create": { "default": "Gagal membuat pengguna" },
     "delete": {
       "default": "Gagal menghapus pengguna"
     },
@@ -49,6 +61,7 @@
     "inactive": "Tidak aktif"
   },
   "success": {
+    "create": { "default": "Pengguna berhasil dibuat" },
     "delete": {
       "default": "Pengguna berhasil dihapus"
     },

@@ -31,6 +31,9 @@ export const adminApi = {
   getUserDetails: (id: number) =>
     apiClient.get<any>(`${BASE_URL}/users/${id}`, { requiresAuth: true }),
 
+  createUser: (username: string, password: string) =>
+    apiClient.post<any>(`${BASE_URL}/users`, { username, password }, { requiresAuth: true }),
+
   deleteUser: (id: number) =>
     apiClient.delete<any>(`${BASE_URL}/users/${id}`, { requiresAuth: true }),
 

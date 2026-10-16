@@ -4,6 +4,17 @@
     "deactivate": "Deactivate user",
     "delete": "Delete user"
   },
+  "createUser": {
+    "button": "Create user",
+    "title": "Create internal user",
+    "description": "After creating the account, share the username and temporary password securely with the user.",
+    "username": "Username",
+    "usernameHint": "3–30 characters; use letters, numbers, underscores, or hyphens.",
+    "password": "Initial password",
+    "passwordHint": "Password is required.",
+    "creating": "Creating…",
+    "submit": "Create"
+  },
   "columns": {
     "labels": {
       "actions": "Actions",
@@ -24,6 +35,7 @@
   "entityName_one": "user",
   "entityName_other": "users",
   "error": {
+    "create": { "default": "Failed to create user" },
     "delete": {
       "default": "Failed to delete user"
     },
@@ -49,6 +61,7 @@
     "inactive": "Inactive"
   },
   "success": {
+    "create": { "default": "User created successfully" },
     "delete": {
       "default": "User deleted successfully"
     },
