@@ -295,7 +295,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `bytestash-export-${
+      link.download = `woqu-command-box-export-${
         new Date().toISOString().split("T")[0]
       }.json`;
       document.body.appendChild(link);
@@ -371,7 +371,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
       const url = window.URL.createObjectURL(content);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `bytestash-export-${
+      link.download = `woqu-command-box-export-${
         new Date().toISOString().split("T")[0]
       }.zip`;
       document.body.appendChild(link);

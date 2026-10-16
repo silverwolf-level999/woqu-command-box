@@ -56,7 +56,7 @@ export const EmbedModal: React.FC<EmbedModalProps> = ({
       }
     });
   })(this);"
-  title="ByteStash Code Snippet"
+  title="WOQU command-box Code Snippet"
 ></iframe>`;
   };
 

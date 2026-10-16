@@ -1,6 +1,6 @@
 {
-  "short_name": "ByteStash",
-  "name": "ByteStash is a code snippet storage solution",
+  "short_name": "WOQU command-box",
+  "name": "WOQU command-box - Internal Command Library",
   "icons": [
     {
       "src": "favicon.ico",

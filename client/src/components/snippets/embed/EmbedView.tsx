@@ -208,7 +208,7 @@ export const EmbedView: React.FC<EmbedViewProps> = ({
           {showPoweredBy && (
             <div className="mt-2 text-right">
               <span className={`text-xs ${getTextColor()}`}>
-                Powered by ByteStash
+                Powered by WOQU command-box
               </span>
             </div>
           )}

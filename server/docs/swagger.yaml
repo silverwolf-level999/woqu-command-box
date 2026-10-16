@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
-  title: ByteStash API
+  title: WOQU command-box API
   version: "1.0.0"
-  description: API documentation for ByteStash snippet storage service.
+  description: API documentation for the WOQU command-box command library.
 servers:
   - url: /
     description: Local server
@@ -27,7 +27,7 @@ components:
       type: http
       scheme: bearer
       description: >
-        ByteStash API key sent as a bearer token (Authorization: Bearer <key>).
+        WOQU command-box API key sent as a bearer token (Authorization: Bearer <key>).
         Used by the MCP endpoint, which most remote MCP clients authenticate with.
   schemas:
     Fragment:
@@ -900,7 +900,7 @@ paths:
       description: >
         JSON-RPC 2.0 endpoint over the MCP Streamable HTTP transport. Lets MCP-capable
         AI clients (Claude, OpenAI, Perplexity) list, read, create, update and delete the
-        authenticated user's snippets. Authenticate with a ByteStash API key sent either as
+        authenticated user's snippets. Authenticate with a WOQU command-box API key sent either as
         `Authorization: Bearer <key>` or the `x-api-key` header. Available tools: list_snippets,
         get_snippet, create_snippet, update_snippet, delete_snippet, list_metadata. See the
         README "MCP (AI assistants)" section for client configuration. The request/response

@@ -125,7 +125,7 @@ const PublicSnippetContentArea: React.FC<PublicSnippetContentAreaProps> = ({
       <PageContainer>
         <div className="flex flex-col items-center justify-center min-h-screen bg-light-bg dark:bg-dark-bg text-light-text dark:text-dark-text">
           <div className="relative">
-            <h1 className="mb-4 text-4xl font-bold">ByteStash</h1>
+            <h1 className="mb-4 text-4xl font-bold">WOQU command-box</h1>
             <div className="flex items-center justify-center gap-3">
               <Loader2 className="w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary animate-spin" />
               <span className="text-light-text-secondary dark:text-dark-text-secondary">

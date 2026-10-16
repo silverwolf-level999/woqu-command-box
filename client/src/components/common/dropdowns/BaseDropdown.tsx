@@ -118,7 +118,7 @@ const BaseDropdown = forwardRef<BaseDropdownRef, BaseDropdownProps>(({
 
   const handleOptionClick = (option: string) => {
     const finalValue = option.startsWith(`${addNewLabel}:`)
-      ? option.slice(9).trim()
+      ? option.slice(`${addNewLabel}:`.length).trim()
       : option;
     setInternalValue(finalValue);
     onSelect(finalValue);

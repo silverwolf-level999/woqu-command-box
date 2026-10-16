@@ -35,7 +35,7 @@
   "filters": {
     "authType": {
       "all": "Tipos autorizados",
-      "internal": "Público (ByteStash)",
+      "internal": "Público (WOQU command-box)",
       "oidc": "SSO (OIDC)"
     },
     "search": "Buscar por email o alias...",
