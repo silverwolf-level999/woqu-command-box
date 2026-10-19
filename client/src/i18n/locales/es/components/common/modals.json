@@ -1,7 +1,0 @@
-{
-  "changelogModal": {
-    "error": {
-      "default": "Error al cargar el registro de cambios. Inténtalo más tarde."
-    }
-  }
-}

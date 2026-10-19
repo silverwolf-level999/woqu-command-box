@@ -7,10 +7,7 @@ import { resources } from './resources';
 
 const DATE_FNS_LOCALE_MAP: Record<string, string> = {
   en: 'enUS',
-  es: 'es',
-  ru: 'ru',
   zh: 'zhCN',
-  it: 'it'
 };
 
 async function setDateFnsDefaultOptions(language?: string) {
@@ -31,6 +28,8 @@ i18n
   .use(initReactI18next)
   .init({
     fallbackLng: DEFAULT_LOCALE,
+    supportedLngs: ['en', 'zh'],
+    load: 'languageOnly',
     debug: process.env.NODE_ENV === 'development',
     saveMissing: process.env.NODE_ENV === 'development',
     saveMissingPlurals: process.env.NODE_ENV === 'development',

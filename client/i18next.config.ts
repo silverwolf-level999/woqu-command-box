@@ -5,12 +5,7 @@ import { Locale } from './src/i18n/types';
 export default defineConfig({
   locales: [
     Locale.en,
-    Locale.ru,
-    Locale.es,
-    Locale.ja,
-    Locale.zh,
-    Locale.it,
-    Locale.id
+    Locale.zh
   ],
   extract: {
     input: 'src/**/*.{js,jsx,ts,tsx}',
