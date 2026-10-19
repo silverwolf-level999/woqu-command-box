@@ -4,6 +4,24 @@
     "dateTimeAgo": "{{dateTime}} 前",
     "defaultDescription": "暂无描述"
   },
+  "comments": {
+    "title": "评论（{{count}}）",
+    "loading": "正在加载评论…",
+    "empty": "还没有评论，来发表第一条评论吧。",
+    "unavailable": "当前无权查看此片段的评论。",
+    "loadFailed": "加载评论失败。",
+    "placeholder": "写下你的评论…",
+    "characterCount": "{{count}} / 5000",
+    "submit": "发表评论",
+    "signInToComment": "登录后发表评论",
+    "loginRequired": "请登录后发表评论。",
+    "save": "保存",
+    "edit": "编辑评论",
+    "delete": "删除评论",
+    "confirmDelete": "确定删除这条评论吗？",
+    "saveFailed": "保存评论失败。",
+    "deleteFailed": "删除评论失败。"
+  },
   "snippetModal": {
     "confirmationModal": {
       "confirmLabel": {

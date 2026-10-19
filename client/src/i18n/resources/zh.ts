@@ -5,6 +5,7 @@ import componentsAdminSelector from '../locales/zh/components/admin/selector.jso
 import componentsAdminApiKeysTab from '../locales/zh/components/admin/tabs/apiKeys.json'
 import componentsAdminUsersTab from '../locales/zh/components/admin/tabs/users.json'
 import componentsAdminSharesTab from '../locales/zh/components/admin/tabs/shares.json'
+import componentsAdminCommentsTab from '../locales/zh/components/admin/tabs/comments.json'
 import componentsAdminSnippetsTab from '../locales/zh/components/admin/tabs/snippets.json'
 import componentsAdminDashboardTab from '../locales/zh/components/admin/tabs/dashboard.json'
 import componentsAuth from '../locales/zh/components/auth.json'
@@ -36,6 +37,7 @@ export const resources = {
   'components/admin/tabs/apiKeys': componentsAdminApiKeysTab,
   'components/admin/tabs/users': componentsAdminUsersTab,
   'components/admin/tabs/shares': componentsAdminSharesTab,
+  'components/admin/tabs/comments': componentsAdminCommentsTab,
   'components/admin/tabs/snippets': componentsAdminSnippetsTab,
   'components/admin/tabs/dashboard': componentsAdminDashboardTab,
   'components/auth': componentsAuth,

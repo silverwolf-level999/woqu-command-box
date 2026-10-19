@@ -9,6 +9,46 @@ import categoryRepository from '../repositories/categoryRepository.js';
 
 const router = express.Router();
 
+// Global comment moderation
+router.get('/comments', async (req, res) => {
+  try {
+    const offset = Math.max(0, parseInt(req.query.offset, 10) || 0);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 50));
+    const search = String(req.query.search || '').trim().slice(0, 200);
+    res.json(await adminRepository.getAllComments({ offset, limit, search }));
+  } catch (error) {
+    Logger.error('Error getting comments:', error);
+    res.status(500).json({ message: 'Failed to retrieve comments' });
+  }
+});
+
+router.put('/comments/:id', async (req, res) => {
+  const content = typeof req.body?.content === 'string' ? req.body.content.trim() : '';
+  if (!content || content.length > 5000) {
+    return res.status(400).json({ message: 'Comment must be between 1 and 5000 characters' });
+  }
+  try {
+    const comment = await adminRepository.updateComment(req.params.id, content);
+    if (!comment) return res.status(404).json({ message: 'Comment not found' });
+    res.json(comment);
+  } catch (error) {
+    Logger.error('Error updating comment:', error);
+    res.status(500).json({ message: 'Failed to update comment' });
+  }
+});
+
+router.delete('/comments/:id', async (req, res) => {
+  try {
+    if (!(await adminRepository.deleteComment(req.params.id))) {
+      return res.status(404).json({ message: 'Comment not found' });
+    }
+    res.json({ id: req.params.id });
+  } catch (error) {
+    Logger.error('Error deleting comment:', error);
+    res.status(500).json({ message: 'Failed to delete comment' });
+  }
+});
+
 // Global category management
 router.get('/categories', async (_req, res) => {
   try {

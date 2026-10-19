@@ -7,6 +7,57 @@ async function count(db, sql, params = []) {
 }
 
 class AdminRepository {
+  async getAllComments({ offset = 0, limit = 50, search = "" } = {}) {
+    const db = getDb();
+    const params = [];
+    let where = "";
+    if (search) {
+      where = "WHERE LOWER(c.content) LIKE LOWER(?) OR LOWER(s.title) LIKE LOWER(?) OR LOWER(author.username) LIKE LOWER(?)";
+      const term = `%${search}%`;
+      params.push(term, term, term);
+    }
+    const total = (await db.get(
+      `SELECT COUNT(*) AS count FROM snippet_comments c JOIN snippets s ON s.id = c.snippet_id JOIN users author ON author.id = c.user_id ${where}`,
+      params
+    )).count;
+    const comments = await db.all(
+      `SELECT c.id, c.snippet_id, c.user_id, c.content,
+        ${db.dialect.utcString("c.created_at")} AS created_at,
+        ${db.dialect.utcString("c.updated_at")} AS updated_at,
+        s.title AS snippet_title, s.is_public, author.username AS author
+       FROM snippet_comments c
+       JOIN snippets s ON s.id = c.snippet_id
+       JOIN users author ON author.id = c.user_id
+       ${where}
+       ORDER BY c.created_at DESC, c.id DESC LIMIT ? OFFSET ?`,
+      [...params, limit, offset]
+    );
+    return { comments, total };
+  }
+
+  async updateComment(id, content) {
+    const db = getDb();
+    await db.run(
+      `UPDATE snippet_comments SET content = ?, updated_at = ${db.dialect.nowUtc} WHERE id = ?`,
+      [content, db.dialect.id(id)]
+    );
+    return db.get(
+      `SELECT c.id, c.snippet_id, c.user_id, c.content,
+        ${db.dialect.utcString("c.created_at")} AS created_at,
+        ${db.dialect.utcString("c.updated_at")} AS updated_at,
+        s.title AS snippet_title, author.username AS author
+       FROM snippet_comments c JOIN snippets s ON s.id = c.snippet_id
+       JOIN users author ON author.id = c.user_id WHERE c.id = ?`,
+      [db.dialect.id(id)]
+    );
+  }
+
+  async deleteComment(id) {
+    const db = getDb();
+    const result = await db.run("DELETE FROM snippet_comments WHERE id = ?", [db.dialect.id(id)]);
+    return result.changes > 0;
+  }
+
   async getStats() {
     try {
       const db = getDb();
@@ -18,6 +69,10 @@ class AdminRepository {
       const publicSnippets = await count(db, `SELECT COUNT(*) as count FROM snippets WHERE is_public = 1`);
       const activeApiKeys = await count(db, `SELECT COUNT(*) as count FROM api_keys WHERE is_active = 1`);
       const totalShares = await count(db, `SELECT COUNT(*) as count FROM shared_snippets`);
+      const totalCategories = await count(db, `SELECT COUNT(*) as count FROM categories`);
+      const usedCategories = await count(db, `SELECT COUNT(DISTINCT category_id) as count FROM snippet_categories`);
+      const totalComments = await count(db, `SELECT COUNT(*) as count FROM snippet_comments`);
+      const publicComments = await count(db, `SELECT COUNT(*) as count FROM snippet_comments c JOIN snippets s ON s.id = c.snippet_id WHERE s.is_public = 1`);
 
       return {
         users: {
@@ -35,6 +90,15 @@ class AdminRepository {
         },
         shares: {
           total: totalShares
+        },
+        categories: {
+          total: totalCategories,
+          used: usedCategories
+        },
+        comments: {
+          total: totalComments,
+          public: publicComments,
+          private: totalComments - publicComments
         }
       };
     } catch (error) {

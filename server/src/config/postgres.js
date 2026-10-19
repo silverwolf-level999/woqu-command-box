@@ -5,6 +5,7 @@ import Logger from "../logger.js";
 import { PostgresAdapter } from "./adapters/postgresAdapter.js";
 import { describePostgresTarget } from "./postgresConfig.js";
 import { migratePostgresCategories } from "./migrations/20261019-category-catalog.js";
+import { migratePostgresSnippetComments } from "./migrations/20261020-snippet-comments.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -64,6 +65,7 @@ async function applySchema(adapter) {
       throw error;
     }
   });
+  await migratePostgresSnippetComments(adapter);
 }
 
 async function openPostgresDatabase(config) {

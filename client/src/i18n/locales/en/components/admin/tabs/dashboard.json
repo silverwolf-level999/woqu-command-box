@@ -1,5 +1,14 @@
 {
   "card": {
+    "categories": {
+      "title": "Categories",
+      "used": "In use"
+    },
+    "comments": {
+      "title": "Comments",
+      "public": "Public snippets",
+      "private": "Private snippets"
+    },
     "apiKeys": {
       "title": "API Keys"
     },

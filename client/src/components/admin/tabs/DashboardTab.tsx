@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Users, FileText, Key, Share2 } from 'lucide-react';
+import { Users, FileText, Key, Share2, Tags, MessageSquare } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { adminApi } from '../../../utils/api/admin';
 
@@ -52,11 +52,26 @@ export const DashboardTab: React.FC = () => {
       total: stats?.shares.total || 0,
       details: [{ label: translate('card.snippets.shares.total'), value: stats?.shares.total || 0 }],
     },
+    {
+      title: translate('card.categories.title'),
+      icon: Tags,
+      total: stats?.categories.total || 0,
+      details: [{ label: translate('card.categories.used'), value: stats?.categories.used || 0 }],
+    },
+    {
+      title: translate('card.comments.title'),
+      icon: MessageSquare,
+      total: stats?.comments.total || 0,
+      details: [
+        { label: translate('card.comments.public'), value: stats?.comments.public || 0 },
+        { label: translate('card.comments.private'), value: stats?.comments.private || 0 },
+      ],
+    },
   ];
 
   return (
     <div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
         {statCards.map((card) => {
           const Icon = card.icon;
           return (

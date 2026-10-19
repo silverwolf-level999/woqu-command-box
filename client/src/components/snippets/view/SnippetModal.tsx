@@ -4,6 +4,7 @@ import { Snippet } from "../../../types/snippets";
 import { ConfirmationModal } from "../../common/modals/ConfirmationModal";
 import Modal from "../../common/modals/Modal";
 import { FullCodeView } from "./FullCodeView";
+import SnippetComments from "./SnippetComments";
 
 export interface SnippetModalProps {
   snippet: Snippet;
@@ -84,6 +85,7 @@ const SnippetModal: React.FC<SnippetModalProps> = ({
           isModal={true}
           isPublicView={isPublicView}
         />
+        {!isRecycleView && <SnippetComments snippetId={snippet.id} isPublicView={isPublicView} />}
       </Modal>
       <ConfirmationModal
         isOpen={isDeleteModalOpen}

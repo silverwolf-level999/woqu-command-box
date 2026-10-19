@@ -1,0 +1,33 @@
+{
+  "actions": {
+    "delete": "删除评论",
+    "edit": "编辑评论"
+  },
+  "columns": {
+    "actions": "操作",
+    "author": "评论用户",
+    "content": "评论内容",
+    "created": "发表时间",
+    "snippet": "所属片段"
+  },
+  "deleteMessage": "确定要删除这条评论吗？此操作无法撤销。",
+  "deleteTitle": "删除评论",
+  "editTitle": "编辑评论",
+  "empty": "暂时没有评论",
+  "entityName_one": "条评论",
+  "entityName_other": "条评论",
+  "error": {
+    "delete": "删除评论失败",
+    "update": "保存评论失败"
+  },
+  "loading": "正在加载评论…",
+  "search": "搜索评论、片段标题或用户",
+  "success": {
+    "delete": "评论已删除",
+    "update": "评论已更新"
+  },
+  "visibility": {
+    "private": "私有",
+    "public": "公开"
+  }
+}

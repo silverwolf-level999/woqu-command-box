@@ -19,6 +19,14 @@ export const adminApi = {
   updateCategory: (id: number, name: string, color: string) => apiClient.patch<any>(`${BASE_URL}/categories/${id}`, { name, color }, { requiresAuth: true }),
   deleteCategory: (id: number) => apiClient.delete<any>(`${BASE_URL}/categories/${id}`, { requiresAuth: true }),
 
+  // Comment moderation
+  getComments: (params: { offset?: number; limit?: number; search?: string } = {}) =>
+    apiClient.get<any>(`${BASE_URL}/comments${buildQueryString(params)}`, { requiresAuth: true }),
+  updateComment: (id: number, content: string) =>
+    apiClient.put<any>(`${BASE_URL}/comments/${id}`, { content }, { requiresAuth: true }),
+  deleteComment: (id: number) =>
+    apiClient.delete<any>(`${BASE_URL}/comments/${id}`, { requiresAuth: true }),
+
   // Dashboard
   getStats: () => apiClient.get<any>(`${BASE_URL}/stats`, { requiresAuth: true }),
 

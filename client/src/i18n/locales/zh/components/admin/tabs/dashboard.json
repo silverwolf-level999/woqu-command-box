@@ -1,5 +1,14 @@
 {
   "card": {
+    "categories": {
+      "title": "分类",
+      "used": "已使用"
+    },
+    "comments": {
+      "title": "评论",
+      "public": "公开片段",
+      "private": "私有片段"
+    },
     "apiKeys": {
       "title": "API 密钥"
     },

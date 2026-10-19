@@ -1,11 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Home, Users, FileCode, Key, Share2, Tags } from 'lucide-react';
+import { Home, Users, FileCode, Key, Share2, Tags, MessageSquare } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { ROUTES } from '../../constants/routes';
 
 interface AdminSelectorProps {
-  selected: 'dashboard' | 'users' | 'snippets' | 'api-keys' | 'shares' | 'categories';
+  selected: 'dashboard' | 'users' | 'snippets' | 'api-keys' | 'shares' | 'categories' | 'comments';
 }
 
 const AdminSelector: React.FC<AdminSelectorProps> = ({ selected }) => {
@@ -19,12 +19,13 @@ const AdminSelector: React.FC<AdminSelectorProps> = ({ selected }) => {
     { value: 'api-keys' as const, label: translate('apiKeys'), icon: Key, route: ROUTES.ADMIN_API_KEYS },
     { value: 'shares' as const, label: translate('shares'), icon: Share2, route: ROUTES.ADMIN_SHARES },
     { value: 'categories' as const, label: translate('categories'), icon: Tags, route: ROUTES.ADMIN_CATEGORIES },
+    { value: 'comments' as const, label: translate('comments'), icon: MessageSquare, route: ROUTES.ADMIN_COMMENTS },
   ];
 
   return (
     <div className="flex items-center gap-3 text-sm text-light-text dark:text-dark-text">
       <div
-        className="flex gap-0.5 rounded-lg bg-light-surface dark:bg-dark-surface px-0.5 py-0.5 min-w-[620px]"
+        className="flex gap-0.5 rounded-lg bg-light-surface px-0.5 py-0.5 dark:bg-dark-surface min-w-[720px]"
         role="group"
       >
         {options.map(({ value, label, icon: Icon, route }) => (
@@ -33,7 +34,7 @@ const AdminSelector: React.FC<AdminSelectorProps> = ({ selected }) => {
             type="button"
             onClick={() => navigate(route)}
             className={`
-              flex items-center justify-center gap-1.5 px-3 py-0.5 rounded-md transition-all duration-200 flex-1
+              flex flex-1 items-center justify-center gap-1.5 px-3 py-0.5 rounded-md transition-all duration-200
               ${selected === value
                 ? 'bg-light-hover dark:bg-dark-hover'
                 : 'hover:bg-light-hover/50 dark:hover:bg-dark-hover/50'

@@ -1,0 +1,33 @@
+{
+  "actions": {
+    "delete": "Delete comment",
+    "edit": "Edit comment"
+  },
+  "columns": {
+    "actions": "Actions",
+    "author": "Commenter",
+    "content": "Comment",
+    "created": "Created",
+    "snippet": "Snippet"
+  },
+  "deleteMessage": "Are you sure you want to delete this comment? This action cannot be undone.",
+  "deleteTitle": "Delete comment",
+  "editTitle": "Edit comment",
+  "empty": "No comments found",
+  "entityName_one": "comment",
+  "entityName_other": "comments",
+  "error": {
+    "delete": "Failed to delete comment",
+    "update": "Failed to save comment"
+  },
+  "loading": "Loading comments…",
+  "search": "Search comment, snippet title, or user",
+  "success": {
+    "delete": "Comment deleted",
+    "update": "Comment updated"
+  },
+  "visibility": {
+    "private": "Private",
+    "public": "Public"
+  }
+}

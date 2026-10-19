@@ -49,6 +49,17 @@ CREATE TABLE IF NOT EXISTS fragments (
     FOREIGN KEY (snippet_id) REFERENCES snippets (id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS snippet_comments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    snippet_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    content TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (snippet_id) REFERENCES snippets (id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS shared_snippets (
     id TEXT PRIMARY KEY,
     snippet_id INTEGER NOT NULL,
@@ -84,6 +95,8 @@ CREATE INDEX IF NOT EXISTS idx_snippet_categories_category_id ON snippet_categor
 CREATE INDEX IF NOT EXISTS idx_categories_name ON categories (name);
 
 CREATE INDEX IF NOT EXISTS idx_fragments_snippet_id ON fragments (snippet_id);
+CREATE INDEX IF NOT EXISTS idx_snippet_comments_snippet_created ON snippet_comments (snippet_id, created_at, id);
+CREATE INDEX IF NOT EXISTS idx_snippet_comments_user_id ON snippet_comments (user_id);
 
 CREATE INDEX IF NOT EXISTS idx_shared_snippets_snippet_id ON shared_snippets (snippet_id);
 

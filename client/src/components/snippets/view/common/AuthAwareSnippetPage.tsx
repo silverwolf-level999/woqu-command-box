@@ -7,6 +7,7 @@ import { useAuth } from '../../../../hooks/useAuth';
 import { Snippet } from '../../../../types/snippets';
 import { getSnippetById, getPublicSnippetById } from '../../../../utils/api/snippets';
 import { FullCodeView } from '../FullCodeView';
+import SnippetComments from '../SnippetComments';
 
 const AuthAwareSnippetView: React.FC = () => {
   const { t: translate } = useTranslation('components/snippets/view/common');
@@ -133,6 +134,7 @@ const AuthAwareSnippetView: React.FC = () => {
     <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 p-8">
       <div className="max-w-4xl mx-auto">
         <FullCodeView snippet={snippet} />
+        <SnippetComments snippetId={snippet.id} isPublicView={!isAuthenticated} />
       </div>
     </div>
   );

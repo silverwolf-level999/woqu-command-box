@@ -4,6 +4,24 @@
     "dateTimeAgo": "{{dateTime}} ago",
     "defaultDescription": "No description available"
   },
+  "comments": {
+    "title": "Comments ({{count}})",
+    "loading": "Loading comments…",
+    "empty": "No comments yet. Be the first to comment.",
+    "unavailable": "You do not have access to this snippet's comments.",
+    "loadFailed": "Failed to load comments.",
+    "placeholder": "Write a comment…",
+    "characterCount": "{{count}} / 5000",
+    "submit": "Comment",
+    "signInToComment": "Sign in to comment",
+    "loginRequired": "Please sign in to comment.",
+    "save": "Save",
+    "edit": "Edit comment",
+    "delete": "Delete comment",
+    "confirmDelete": "Are you sure you want to delete this comment?",
+    "saveFailed": "Failed to save comment.",
+    "deleteFailed": "Failed to delete comment."
+  },
   "snippetModal": {
     "confirmationModal": {
       "confirmLabel": {

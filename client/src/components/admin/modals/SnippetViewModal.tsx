@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { adminApi } from '../../../utils/api/admin';
 import Modal from '../../common/modals/Modal';
 import { FullCodeView } from '../../snippets/view/FullCodeView';
+import SnippetComments from '../../snippets/view/SnippetComments';
 
 interface SnippetViewModalProps {
   snippetId: number | null;
@@ -56,6 +57,7 @@ export const SnippetViewModal: React.FC<SnippetViewModalProps> = ({
             isModal={true}
             showLineNumbers={true}
           />
+          <SnippetComments snippetId={String(snippet.id)} isPublicView={false} canComment={Boolean(snippet.is_public)} />
         </div>
       )}
     </Modal>
