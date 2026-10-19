@@ -18,6 +18,7 @@ export interface BaseDropdownProps {
   disabled?: boolean;
   maxLength?: number;
   showChevron?: boolean;
+  clearOnSelect?: boolean;
 }
 
 /**
@@ -38,6 +39,7 @@ const BaseDropdown = forwardRef<BaseDropdownRef, BaseDropdownProps>(({
   disabled = false,
   maxLength,
   showChevron = true,
+  clearOnSelect = false,
   ...props
 }, ref) => {
   const { t: translate } = useTranslation('components/common/dropdowns');
@@ -99,9 +101,12 @@ const BaseDropdown = forwardRef<BaseDropdownRef, BaseDropdownProps>(({
     }
   }, [highlightedIndex]);
 
-  const handleMouseEnter = (index: number) => {
+  const handleMouseEnter = () => {
     lastInteractionWasMouse.current = true;
-    setHighlightedIndex(index);
+    // Let CSS :hover follow the pointer. Keeping a mouse-selected index in
+    // React state can leave an option highlighted after the list scrolls
+    // underneath a stationary pointer.
+    setHighlightedIndex(-1);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -120,8 +125,8 @@ const BaseDropdown = forwardRef<BaseDropdownRef, BaseDropdownProps>(({
     const finalValue = option.startsWith(`${addNewLabel}:`)
       ? option.slice(`${addNewLabel}:`.length).trim()
       : option;
-    setInternalValue(finalValue);
     onSelect(finalValue);
+    setInternalValue(clearOnSelect ? "" : finalValue);
     setIsOpen(false);
     setHighlightedIndex(-1);
   };
@@ -139,6 +144,7 @@ const BaseDropdown = forwardRef<BaseDropdownRef, BaseDropdownProps>(({
     switch (e.key) {
       case "ArrowDown":
         e.preventDefault();
+        lastInteractionWasMouse.current = false;
         if (!isOpen) {
           setIsOpen(true);
         }
@@ -149,6 +155,7 @@ const BaseDropdown = forwardRef<BaseDropdownRef, BaseDropdownProps>(({
 
       case "ArrowUp":
         e.preventDefault();
+        lastInteractionWasMouse.current = false;
         if (!isOpen) {
           setIsOpen(true);
         }
@@ -198,6 +205,7 @@ const BaseDropdown = forwardRef<BaseDropdownRef, BaseDropdownProps>(({
           value={internalValue}
           onChange={handleInputChange}
           onFocus={() => setIsOpen(true)}
+          onClick={() => setIsOpen(true)}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           disabled={disabled}
@@ -218,6 +226,10 @@ const BaseDropdown = forwardRef<BaseDropdownRef, BaseDropdownProps>(({
       {isOpen && sections.length > 0 && (
         <ul
           ref={listRef}
+          onMouseLeave={() => {
+            setHighlightedIndex(-1);
+            lastInteractionWasMouse.current = false;
+          }}
           className="absolute z-10 w-full mt-1 overflow-auto border rounded-md shadow-lg bg-light-surface dark:bg-dark-surface border-light-border dark:border-dark-border max-h-60"
           role="listbox"
         >
@@ -244,7 +256,7 @@ const BaseDropdown = forwardRef<BaseDropdownRef, BaseDropdownProps>(({
                     }`}
                     onClick={() => handleOptionClick(item)}
                     onMouseDown={(e) => e.preventDefault()}
-                    onMouseEnter={() => handleMouseEnter(currentIndex)}
+                    onMouseEnter={handleMouseEnter}
                     data-index={currentIndex}
                     role="option"
                     aria-selected={highlightedIndex === currentIndex}

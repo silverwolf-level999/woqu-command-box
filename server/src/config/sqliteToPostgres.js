@@ -12,6 +12,7 @@ const TABLES = [
   "users",
   "snippets",
   "categories",
+  "snippet_categories",
   "fragments",
   "shared_snippets",
   "api_keys",
@@ -91,6 +92,7 @@ function readSource(sqlite) {
     users: all("users"),
     snippets: all("snippets"),
     categories: all("categories"),
+    snippet_categories: all("snippet_categories"),
     fragments: all("fragments"),
     shared_snippets: all("shared_snippets"),
     api_keys: all("api_keys"),
@@ -155,18 +157,19 @@ function buildRows(source) {
     ];
   });
 
-  const categories = [];
-  for (const category of source.categories) {
-    if (!snippetIds.has(category.snippet_id)) {
-      skip("categories");
-      continue;
+  const categories = source.categories.map((category) => [
+    category.id,
+    toText(category.name, ""),
+    toText(category.color, ""),
+  ]);
+  const categoryIds = new Set(source.categories.map((category) => category.id));
+  const snippetCategories = source.snippet_categories.filter((link) => {
+    if (!snippetIds.has(link.snippet_id) || !categoryIds.has(link.category_id)) {
+      skip("snippet_categories");
+      return false;
     }
-    categories.push([
-      category.id,
-      category.snippet_id,
-      toText(category.name, ""),
-    ]);
-  }
+    return true;
+  }).map((link) => [link.snippet_id, link.category_id]);
 
   const fragments = [];
   for (const fragment of source.fragments) {
@@ -264,7 +267,8 @@ function buildRows(source) {
         ],
         rows: snippets,
       },
-      categories: { columns: ["id", "snippet_id", "name"], rows: categories },
+      categories: { columns: ["id", "name", "color"], rows: categories },
+      snippet_categories: { columns: ["snippet_id", "category_id"], rows: snippetCategories },
       fragments: {
         columns: ["id", "snippet_id", "file_name", "code", "language", "position"],
         rows: fragments,

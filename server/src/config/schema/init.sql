@@ -27,9 +27,16 @@ CREATE TABLE IF NOT EXISTS snippets (
 
 CREATE TABLE IF NOT EXISTS categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    snippet_id INTEGER,
-    name TEXT NOT NULL,
-    FOREIGN KEY (snippet_id) REFERENCES snippets (id) ON DELETE CASCADE
+    name TEXT NOT NULL COLLATE NOCASE UNIQUE,
+    color TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS snippet_categories (
+    snippet_id INTEGER NOT NULL,
+    category_id INTEGER NOT NULL,
+    PRIMARY KEY (snippet_id, category_id),
+    FOREIGN KEY (snippet_id) REFERENCES snippets (id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS fragments (
@@ -73,7 +80,8 @@ CREATE INDEX IF NOT EXISTS idx_users_username ON users (username);
 
 CREATE INDEX IF NOT EXISTS idx_snippets_user_id ON snippets (user_id);
 
-CREATE INDEX IF NOT EXISTS idx_categories_snippet_id ON categories (snippet_id);
+CREATE INDEX IF NOT EXISTS idx_snippet_categories_category_id ON snippet_categories (category_id);
+CREATE INDEX IF NOT EXISTS idx_categories_name ON categories (name);
 
 CREATE INDEX IF NOT EXISTS idx_fragments_snippet_id ON fragments (snippet_id);
 

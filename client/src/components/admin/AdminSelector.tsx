@@ -1,11 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Home, Users, FileCode, Key, Share2 } from 'lucide-react';
+import { Home, Users, FileCode, Key, Share2, Tags } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { ROUTES } from '../../constants/routes';
 
 interface AdminSelectorProps {
-  selected: 'dashboard' | 'users' | 'snippets' | 'api-keys' | 'shares';
+  selected: 'dashboard' | 'users' | 'snippets' | 'api-keys' | 'shares' | 'categories';
 }
 
 const AdminSelector: React.FC<AdminSelectorProps> = ({ selected }) => {
@@ -18,12 +18,13 @@ const AdminSelector: React.FC<AdminSelectorProps> = ({ selected }) => {
     { value: 'snippets' as const, label: translate('snippets'), icon: FileCode, route: ROUTES.ADMIN_SNIPPETS },
     { value: 'api-keys' as const, label: translate('apiKeys'), icon: Key, route: ROUTES.ADMIN_API_KEYS },
     { value: 'shares' as const, label: translate('shares'), icon: Share2, route: ROUTES.ADMIN_SHARES },
+    { value: 'categories' as const, label: translate('categories'), icon: Tags, route: ROUTES.ADMIN_CATEGORIES },
   ];
 
   return (
     <div className="flex items-center gap-3 text-sm text-light-text dark:text-dark-text">
       <div
-        className="flex gap-0.5 rounded-lg bg-light-surface dark:bg-dark-surface px-0.5 py-0.5 min-w-[500px]"
+        className="flex gap-0.5 rounded-lg bg-light-surface dark:bg-dark-surface px-0.5 py-0.5 min-w-[620px]"
         role="group"
       >
         {options.map(({ value, label, icon: Icon, route }) => (

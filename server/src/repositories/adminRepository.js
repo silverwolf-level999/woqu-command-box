@@ -201,7 +201,7 @@ class AdminRepository {
       }
 
       if (category) {
-        filters += ` AND s.id IN (SELECT snippet_id FROM categories WHERE name = ?)`;
+        filters += ` AND s.id IN (SELECT sc.snippet_id FROM snippet_categories sc JOIN categories c ON c.id = sc.category_id WHERE LOWER(c.name) = LOWER(?))`;
         filterParams.push(category);
       }
 
@@ -449,7 +449,8 @@ class AdminRepository {
           ${dialect.groupConcatDistinct('c.name')} as categories,
           (SELECT COUNT(*) FROM shared_snippets WHERE snippet_id = s.id) as share_count
         FROM snippets s
-        LEFT JOIN categories c ON s.id = c.snippet_id
+        LEFT JOIN snippet_categories sc ON s.id = sc.snippet_id
+        LEFT JOIN categories c ON c.id = sc.category_id
         LEFT JOIN users u ON s.user_id = u.id
         WHERE s.id = ?
         GROUP BY s.id, u.id
@@ -468,10 +469,15 @@ class AdminRepository {
         WHERE snippet_id = ?
         ORDER BY position, id
       `, [id]);
+      const categoryRows = await db.all(`
+        SELECT c.name, c.color FROM snippet_categories sc
+        JOIN categories c ON c.id = sc.category_id WHERE sc.snippet_id = ?
+      `, [id]);
 
       return {
         ...snippet,
         categories: snippet.categories ? snippet.categories.split(',') : [],
+        category_colors: Object.fromEntries(categoryRows.map(({ name, color }) => [name, color])),
         fragments: fragments.sort((a, b) => a.position - b.position),
         share_count: snippet.share_count || 0,
       };

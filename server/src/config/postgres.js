@@ -4,6 +4,7 @@ import { fileURLToPath } from "url";
 import Logger from "../logger.js";
 import { PostgresAdapter } from "./adapters/postgresAdapter.js";
 import { describePostgresTarget } from "./postgresConfig.js";
+import { migratePostgresCategories } from "./migrations/20261019-category-catalog.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -46,6 +47,7 @@ async function waitForConnection(adapter, target) {
 }
 
 async function applySchema(adapter) {
+  await migratePostgresCategories(adapter);
   const schemaSql = fs.readFileSync(
     join(__dirname, "schema/init.postgres.sql"),
     "utf8"

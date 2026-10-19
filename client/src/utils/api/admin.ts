@@ -13,6 +13,12 @@ const buildQueryString = (params: Record<string, any>): string => {
 };
 
 export const adminApi = {
+  // Categories
+  getCategories: () => apiClient.get<any>(`${BASE_URL}/categories`, { requiresAuth: true }),
+  createCategory: (name: string, color: string) => apiClient.post<any>(`${BASE_URL}/categories`, { name, color }, { requiresAuth: true }),
+  updateCategory: (id: number, name: string, color: string) => apiClient.patch<any>(`${BASE_URL}/categories/${id}`, { name, color }, { requiresAuth: true }),
+  deleteCategory: (id: number) => apiClient.delete<any>(`${BASE_URL}/categories/${id}`, { requiresAuth: true }),
+
   // Dashboard
   getStats: () => apiClient.get<any>(`${BASE_URL}/stats`, { requiresAuth: true }),
 

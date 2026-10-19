@@ -5,8 +5,66 @@ import Logger from '../logger.js';
 import userService from '../services/userService.js';
 import { DISABLE_INTERNAL_ACCOUNTS } from '../middleware/auth.js';
 import { isAdmin } from '../middleware/adminAuth.js';
+import categoryRepository from '../repositories/categoryRepository.js';
 
 const router = express.Router();
+
+// Global category management
+router.get('/categories', async (_req, res) => {
+  try {
+    res.json({ categories: await categoryRepository.getAll() });
+  } catch (error) {
+    Logger.error('Error getting categories:', error);
+    res.status(500).json({ message: 'Failed to retrieve categories' });
+  }
+});
+
+router.post('/categories', async (req, res) => {
+  const name = String(req.body?.name || '').trim();
+  const color = String(req.body?.color || '');
+  if (!name || name.length > 50) return res.status(400).json({ message: 'Category name must be between 1 and 50 characters' });
+  if (color && !['blue', 'emerald', 'purple', 'amber', 'rose', 'cyan', 'indigo', 'teal'].includes(color)) {
+    return res.status(400).json({ message: 'Invalid category color' });
+  }
+  try {
+    const category = await categoryRepository.create({ name, color });
+    if (!category) return res.status(409).json({ message: 'Category already exists' });
+    res.status(201).json(category);
+  } catch (error) {
+    Logger.error('Error creating category:', error);
+    res.status(500).json({ message: 'Failed to create category' });
+  }
+});
+
+router.patch('/categories/:id', async (req, res) => {
+  const name = String(req.body?.name || '').trim();
+  const color = String(req.body?.color || '');
+  if (!name || name.length > 50) return res.status(400).json({ message: 'Category name must be between 1 and 50 characters' });
+  if (color && !['blue', 'emerald', 'purple', 'amber', 'rose', 'cyan', 'indigo', 'teal'].includes(color)) {
+    return res.status(400).json({ message: 'Invalid category color' });
+  }
+  try {
+    const category = await categoryRepository.update(req.params.id, { name, color });
+    if (!category) return res.status(404).json({ message: 'Category not found' });
+    res.json(category);
+  } catch (error) {
+    if (error?.code === 'SQLITE_CONSTRAINT_UNIQUE' || error?.code === '23505') {
+      return res.status(409).json({ message: 'Category already exists' });
+    }
+    Logger.error('Error updating category:', error);
+    res.status(500).json({ message: 'Failed to update category' });
+  }
+});
+
+router.delete('/categories/:id', async (req, res) => {
+  try {
+    if (!(await categoryRepository.delete(req.params.id))) return res.status(404).json({ message: 'Category not found' });
+    res.json({ message: 'Category deleted successfully' });
+  } catch (error) {
+    Logger.error('Error deleting category:', error);
+    res.status(500).json({ message: 'Failed to delete category' });
+  }
+});
 
 // Dashboard stats
 router.get('/stats', async (req, res) => {

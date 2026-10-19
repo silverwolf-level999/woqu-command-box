@@ -16,4 +16,5 @@ export const ROUTES = {
   ADMIN_SNIPPETS: '/admin/snippets',
   ADMIN_API_KEYS: '/admin/api-keys',
   ADMIN_SHARES: '/admin/shares',
+  ADMIN_CATEGORIES: '/admin/categories',
 } as const;

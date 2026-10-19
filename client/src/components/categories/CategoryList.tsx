@@ -5,6 +5,7 @@ import CategoryTag, { type CategoryTagVariant } from "./CategoryTag";
 
 interface CategoryListProps {
   categories: string[];
+  categoryColors?: Record<string, string>;
   onCategoryClick: (e: React.MouseEvent, category: string) => void;
   className?: string;
   variant: CategoryTagVariant;
@@ -13,6 +14,7 @@ interface CategoryListProps {
 
 const CategoryList: React.FC<CategoryListProps> = ({
   categories,
+  categoryColors = {},
   onCategoryClick,
   className = "",
   variant,
@@ -97,6 +99,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
           <CategoryTag
             key={category}
             category={category}
+            color={categoryColors[category]}
             onClick={onCategoryClick}
             variant={variant}
           />
@@ -145,6 +148,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
             <CategoryTag
               key={category}
               category={category}
+              color={categoryColors[category]}
               onClick={onCategoryClick}
               variant={variant}
             />

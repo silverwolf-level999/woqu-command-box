@@ -13,6 +13,7 @@ export interface Snippet {
   updated_at: string;
   expiry_date?: string;
   categories: string[];
+  category_colors?: Record<string, string>;
   fragments: CodeFragment[];
   share_count?: number;
   is_public: number;

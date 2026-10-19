@@ -129,6 +129,7 @@ const CategorySuggestions: React.FC<CategorySuggestionsProps> = ({
       className={className}
       disabled={disabled || (maxCategories !== undefined && selectedCategories.length >= maxCategories)}
       showChevron={false}
+      clearOnSelect
     />
   );
 };

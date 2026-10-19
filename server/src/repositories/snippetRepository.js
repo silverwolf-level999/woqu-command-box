@@ -19,7 +19,8 @@ function snippetSelect(dialect, { withExpiry = false } = {}) {
       ${dialect.groupConcatDistinct("c.name")} as categories,
       (SELECT COUNT(*) FROM shared_snippets WHERE snippet_id = s.id) as share_count
     FROM snippets s
-    LEFT JOIN categories c ON s.id = c.snippet_id
+    LEFT JOIN snippet_categories sc ON s.id = sc.snippet_id
+    LEFT JOIN categories c ON c.id = sc.category_id
     LEFT JOIN users u ON s.user_id = u.id
   `;
 }
@@ -34,15 +35,12 @@ const INSERT_FRAGMENT_SQL = `
   ) VALUES (?, ?, ?, ?, ?)
 `;
 
-const INSERT_CATEGORY_SQL = `
-  INSERT INTO categories (snippet_id, name) VALUES (?, ?)
-`;
-
 class SnippetRepository {
   async #processSnippets(queryable, snippets) {
     if (snippets.length === 0) return [];
 
     const fragmentsBySnippet = new Map();
+    const categoryColorsBySnippet = new Map();
     const ids = snippets.map((snippet) => snippet.id);
 
     for (let start = 0; start < ids.length; start += FRAGMENT_BATCH_SIZE) {
@@ -63,11 +61,21 @@ class SnippetRepository {
         }
         fragmentsBySnippet.get(snippet_id).push(fragment);
       }
+
+      const categoryRows = await queryable.all(
+        `SELECT sc.snippet_id, c.name, c.color FROM snippet_categories sc JOIN categories c ON c.id = sc.category_id WHERE sc.snippet_id IN (${batch.map(() => "?").join(",")})`,
+        batch
+      );
+      for (const { snippet_id, name, color } of categoryRows) {
+        if (!categoryColorsBySnippet.has(snippet_id)) categoryColorsBySnippet.set(snippet_id, {});
+        categoryColorsBySnippet.get(snippet_id)[name] = color;
+      }
     }
 
     return snippets.map((snippet) => ({
       ...snippet,
       categories: snippet.categories ? snippet.categories.split(",") : [],
+      category_colors: categoryColorsBySnippet.get(snippet.id) || {},
       fragments: (fragmentsBySnippet.get(snippet.id) || []).sort(
         (a, b) => a.position - b.position
       ),
@@ -108,10 +116,15 @@ class SnippetRepository {
   async #insertCategories(queryable, snippetId, categories) {
     for (const category of categories) {
       if (category.trim()) {
-        await queryable.run(INSERT_CATEGORY_SQL, [
-          snippetId,
-          category.trim().toLowerCase(),
-        ]);
+        const name = category.trim().toLowerCase();
+        await queryable.run("INSERT INTO categories (name) VALUES (?) ON CONFLICT DO NOTHING", [name]);
+        const row = await queryable.get("SELECT id FROM categories WHERE LOWER(name) = LOWER(?)", [name]);
+        if (row) {
+          await queryable.run(
+            "INSERT INTO snippet_categories (snippet_id, category_id) VALUES (?, ?) ON CONFLICT DO NOTHING",
+            [snippetId, row.id]
+          );
+        }
       }
     }
   }
@@ -230,13 +243,9 @@ class SnippetRepository {
 
         await tx.run(
           `
-            DELETE FROM categories
+            DELETE FROM snippet_categories
             WHERE snippet_id = ?
-            AND EXISTS (
-              SELECT 1 FROM snippets
-              WHERE snippets.id = categories.snippet_id
-              AND snippets.user_id = ?
-            )
+            AND EXISTS (SELECT 1 FROM snippets WHERE snippets.id = snippet_categories.snippet_id AND snippets.user_id = ?)
           `,
           [snippetId, userId]
         );
@@ -430,7 +439,8 @@ class SnippetRepository {
           (SELECT COUNT(*) FROM shared_snippets WHERE snippet_id = s.id) as share_count,
           COUNT(*) OVER() as total_count
         FROM snippets s
-        LEFT JOIN categories c ON s.id = c.snippet_id
+        LEFT JOIN snippet_categories sc ON s.id = sc.snippet_id
+        LEFT JOIN categories c ON c.id = sc.category_id
         LEFT JOIN users u ON s.user_id = u.id
         WHERE 1=1
       `;
@@ -525,24 +535,10 @@ class SnippetRepository {
     try {
       const db = getDb();
 
-      // Get unique categories
-      let categorySql = `
-        SELECT DISTINCT c.name
-        FROM categories c
-        INNER JOIN snippets s ON c.snippet_id = s.id
-        WHERE s.expiry_date IS NULL
-      `;
-      const categoryParams = [];
-
-      if (userId !== null) {
-        categorySql += ` AND s.user_id = ?`;
-        categoryParams.push(userId);
-      } else {
-        categorySql += ` AND s.is_public = 1`;
-      }
-      categorySql += ` ORDER BY c.name`;
-
-      const categories = (await db.all(categorySql, categoryParams)).map(r => r.name);
+      // Load the global category catalog and colors for suggestion and editing UI.
+      const categoryRows = await db.all("SELECT name, color FROM categories ORDER BY name");
+      const categories = categoryRows.map((row) => row.name);
+      const categoryColors = Object.fromEntries(categoryRows.map(({ name, color }) => [name, color]));
 
       // Get unique languages
       let languageSql = `
@@ -576,7 +572,7 @@ class SnippetRepository {
 
       const total = (await db.get(countSql, countParams)).count;
 
-      return { categories, languages, counts: { total } };
+      return { categories, categoryColors, languages, counts: { total } };
     } catch (error) {
       Logger.error("Error in getMetadata:", error);
       throw error;

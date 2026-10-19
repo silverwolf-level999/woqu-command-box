@@ -8,5 +8,39 @@
     "addNewLabel": "Add new",
     "placeholder": "Type to search categories...",
     "title": "Categories"
+  },
+  "categoryManagement": {
+    "deleteTitle": "Delete category",
+    "deleted": "Category deleted",
+    "empty": "No categories yet",
+    "loading": "Loading…",
+    "created": "Category added",
+    "title": "Category Management",
+    "add": "Add category",
+    "saveFailed": "Failed to save category",
+    "updated": "Category updated",
+    "deleteFailed": "Failed to delete category",
+    "actions": "Actions",
+    "edit": "Edit",
+    "automatic": "Automatic",
+    "usage": "Snippets",
+    "name": "Category",
+    "namePlaceholder": "Enter category name",
+    "deleteMessage": "This removes “{{name}}” from {{count}} snippets.",
+    "cancel": "Cancel",
+    "colors": {
+      "teal": "Teal",
+      "emerald": "Emerald",
+      "purple": "Purple",
+      "indigo": "Indigo",
+      "rose": "Rose",
+      "blue": "Blue",
+      "cyan": "Cyan",
+      "amber": "Amber"
+    },
+    "description": "Manage snippet categories and their colors.",
+    "save": "Save",
+    "delete": "Delete",
+    "color": "Color"
   }
 }

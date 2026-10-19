@@ -318,6 +318,7 @@ export const SnippetCard: React.FC<SnippetCardProps> = ({
             <div className="mb-3">
               <CategoryList
                 categories={snippet.categories}
+                categoryColors={snippet.category_colors}
                 onCategoryClick={handleCategoryClick}
                 variant="clickable"
                 showAll={expandCategories}

@@ -113,6 +113,7 @@ export const FullCodeView: React.FC<FullCodeViewProps> = ({
           <div className="mt-3">
             <CategoryList
               categories={snippet.categories}
+              categoryColors={snippet.category_colors}
               onCategoryClick={handleCategoryClick}
               variant="clickable"
               showAll={true}

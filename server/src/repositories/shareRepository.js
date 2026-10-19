@@ -12,6 +12,10 @@ class ShareRepository {
       WHERE snippet_id = ?
       ORDER BY position, id
     `, [share.id]);
+    const categoryRows = await db.all(`
+      SELECT c.name, c.color FROM snippet_categories sc
+      JOIN categories c ON c.id = sc.category_id WHERE sc.snippet_id = ?
+    `, [share.id]);
 
     return {
       id: share.id,
@@ -19,6 +23,7 @@ class ShareRepository {
       description: share.description,
       updated_at: share.updated_at,
       categories: share.categories ? share.categories.split(',') : [],
+      category_colors: Object.fromEntries(categoryRows.map(({ name, color }) => [name, color])),
       fragments: fragments.sort((a, b) => a.position - b.position),
       share: {
         id: share.share_id,
@@ -94,7 +99,8 @@ class ShareRepository {
           ${dialect.groupConcatDistinct('c.name')} as categories
         FROM shared_snippets ss
         JOIN snippets s ON s.id = ss.snippet_id
-        LEFT JOIN categories c ON s.id = c.snippet_id
+        LEFT JOIN snippet_categories sc ON s.id = sc.snippet_id
+        LEFT JOIN categories c ON c.id = sc.category_id
         WHERE ss.id = ? AND s.expiry_date IS NULL
         GROUP BY s.id, ss.id
       `, [id]);

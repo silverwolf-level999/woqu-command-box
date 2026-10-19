@@ -20,6 +20,7 @@ export interface EditSnippetModalProps {
   snippetToEdit: Snippet | null;
   showLineNumbers: boolean;
   allCategories: string[];
+  categoryColors: Record<string, string>;
 }
 
 const EditSnippetModal: React.FC<EditSnippetModalProps> = ({
@@ -29,6 +30,7 @@ const EditSnippetModal: React.FC<EditSnippetModalProps> = ({
   snippetToEdit,
   showLineNumbers,
   allCategories,
+  categoryColors,
 }) => {
   const { t } = useTranslation();
   const { t: translate } = useTranslation('components/snippets/edit');
@@ -374,6 +376,7 @@ const EditSnippetModal: React.FC<EditSnippetModalProps> = ({
                 </p>
                 <CategoryList
                   categories={categories}
+                  categoryColors={{ ...categoryColors, ...snippetToEdit?.category_colors }}
                   onCategoryClick={handleRemoveCategory}
                   className="mt-2"
                   variant="removable"

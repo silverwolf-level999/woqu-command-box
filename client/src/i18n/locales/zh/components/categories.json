@@ -8,5 +8,39 @@
     "addNewLabel": "新增",
     "placeholder": "输入以搜索分类...",
     "title": "分类"
+  },
+  "categoryManagement": {
+    "deleteTitle": "删除分类",
+    "deleted": "分类已删除",
+    "empty": "暂无分类",
+    "loading": "正在加载…",
+    "created": "分类已添加",
+    "title": "分类管理",
+    "add": "添加分类",
+    "saveFailed": "保存分类失败",
+    "updated": "分类已更新",
+    "deleteFailed": "删除分类失败",
+    "actions": "操作",
+    "edit": "编辑",
+    "automatic": "自动颜色",
+    "usage": "使用片段数",
+    "name": "分类名称",
+    "namePlaceholder": "输入分类名称",
+    "deleteMessage": "删除“{{name}}”后，会从 {{count}} 个代码片段中移除该分类。",
+    "cancel": "取消",
+    "colors": {
+      "teal": "青绿",
+      "emerald": "翠绿",
+      "purple": "紫色",
+      "indigo": "靛蓝",
+      "rose": "玫瑰",
+      "blue": "蓝色",
+      "cyan": "青色",
+      "amber": "琥珀"
+    },
+    "description": "管理全站代码片段分类及其颜色。",
+    "save": "保存",
+    "delete": "删除",
+    "color": "颜色"
   }
 }

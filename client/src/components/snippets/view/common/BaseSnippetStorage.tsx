@@ -40,8 +40,9 @@ const BaseSnippetStorage: React.FC = () => {
   } = useSettings();
 
   // Metadata - loaded once, never changes
-  const [metadata, setMetadata] = useState<{ categories: string[]; languages: string[] }>({
+  const [metadata, setMetadata] = useState<{ categories: string[]; categoryColors: Record<string, string>; languages: string[] }>({
     categories: [],
+    categoryColors: {},
     languages: []
   });
 
@@ -255,6 +256,7 @@ const BaseSnippetStorage: React.FC = () => {
         snippetToEdit={snippetToEdit}
         showLineNumbers={showLineNumbers}
         allCategories={metadata.categories}
+        categoryColors={metadata.categoryColors}
       />
 
       <SettingsModal

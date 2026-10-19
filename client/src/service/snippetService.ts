@@ -115,6 +115,7 @@ export const snippetService = {
 
   async getSnippetsMetadata(): Promise<{
     categories: string[];
+    categoryColors: Record<string, string>;
     languages: string[];
     counts: { total: number };
   }> {
@@ -154,6 +155,7 @@ export const snippetService = {
 
   async getPublicSnippetsMetadata(): Promise<{
     categories: string[];
+    categoryColors: Record<string, string>;
     languages: string[];
     counts: { total: number };
   }> {
