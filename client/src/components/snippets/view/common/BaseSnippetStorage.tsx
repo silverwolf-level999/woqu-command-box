@@ -10,7 +10,7 @@ import { SearchAndFilter } from "../../../search/SearchAndFilter";
 import { snippetService } from "../../../../service/snippetService";
 import { Snippet } from "../../../../types/snippets";
 import SettingsModal from "../../../settings/SettingsModal";
-import { UserDropdown } from "../../../auth/UserDropdown";
+import HeaderUserActions from "../../../common/layout/HeaderUserActions";
 import EditSnippetModal from "../../edit/EditSnippetModal";
 import { ShareMenu } from "../../share/ShareMenu";
 import SnippetContentArea from "./SnippetContentArea";
@@ -211,7 +211,7 @@ const BaseSnippetStorage: React.FC = () => {
       <div className="min-h-screen p-8 bg-light-bg dark:bg-dark-bg text-light-text dark:text-dark-text">
         <div className="flex items-start justify-between mb-4">
           <StorageHeader isPublicView={false} />
-          <UserDropdown />
+          <HeaderUserActions />
         </div>
 
         <SearchAndFilter

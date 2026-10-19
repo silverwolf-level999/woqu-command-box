@@ -9,11 +9,13 @@ import SnippetComments from '../../snippets/view/SnippetComments';
 
 interface SnippetViewModalProps {
   snippetId: number | null;
+  focusCommentId?: number | null;
   onClose: () => void;
 }
 
 export const SnippetViewModal: React.FC<SnippetViewModalProps> = ({
   snippetId,
+  focusCommentId = null,
   onClose,
 }) => {
   const { t: translate } = useTranslation('components/admin/modals');
@@ -50,15 +52,15 @@ export const SnippetViewModal: React.FC<SnippetViewModalProps> = ({
       )}
 
       {snippet && !isLoading && !error && (
-        <div className="overflow-y-auto max-h-[calc(100vh-200px)]">
+        <>
           <FullCodeView
             snippet={snippet}
             showTitle={false}
             isModal={true}
             showLineNumbers={true}
           />
-          <SnippetComments snippetId={String(snippet.id)} isPublicView={false} canComment={Boolean(snippet.is_public)} />
-        </div>
+          <SnippetComments snippetId={String(snippet.id)} isPublicView={false} canComment={Boolean(snippet.is_public)} focusCommentId={focusCommentId} />
+        </>
       )}
     </Modal>
   );

@@ -31,6 +31,12 @@ function validateContent(req, res, next) {
     return res.status(400).json({ error: `Comment must be between 1 and ${MAX_COMMENT_LENGTH} characters` });
   }
   req.commentContent = content;
+  const parentCommentId = req.body?.parent_comment_id;
+  if (parentCommentId !== undefined && parentCommentId !== null &&
+      (!Number.isInteger(Number(parentCommentId)) || Number(parentCommentId) <= 0)) {
+    return res.status(400).json({ error: "Invalid parent comment" });
+  }
+  req.parentCommentId = parentCommentId == null ? null : Number(parentCommentId);
   next();
 }
 
@@ -47,7 +53,7 @@ router.get("/:snippetId/comments", optionalAuth, async (req, res) => {
 
 router.post("/:snippetId/comments", authenticateToken, requireAccount, validateContent, async (req, res) => {
   try {
-    const comment = await snippetCommentRepository.create(req.params.snippetId, req.user, req.commentContent);
+    const comment = await snippetCommentRepository.create(req.params.snippetId, req.user, req.commentContent, req.parentCommentId);
     if (!comment) return res.status(404).json({ error: "Snippet not found" });
     res.status(201).json(comment);
   } catch (error) {

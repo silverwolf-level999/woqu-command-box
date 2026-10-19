@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Pencil, Trash2 } from 'lucide-react';
+import { MapPin, Pencil, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { adminApi } from '../../../utils/api/admin';
 import { useToast } from '../../../hooks/useToast';
 import Modal from '../../common/modals/Modal';
 import { ConfirmationModal } from '../../common/modals/ConfirmationModal';
 import { AdminTable, FilterInput, Pagination, ResultsCount, type TableColumn } from '../common';
+import { SnippetViewModal } from '../modals/SnippetViewModal';
 
 interface AdminComment {
   id: number;
@@ -29,6 +30,7 @@ export const CommentsTab: React.FC = () => {
   const [editingComment, setEditingComment] = useState<AdminComment | null>(null);
   const [editContent, setEditContent] = useState('');
   const [deletingCommentId, setDeletingCommentId] = useState<number | null>(null);
+  const [locatingComment, setLocatingComment] = useState<{ snippetId: number; commentId: number } | null>(null);
   const limit = 50;
 
   const { data, isLoading } = useQuery({
@@ -60,6 +62,11 @@ export const CommentsTab: React.FC = () => {
   const total = data?.total || 0;
   const columns: TableColumn<AdminComment>[] = [
     {
+      key: 'commentId',
+      label: translate('columns.commentId'),
+      render: (comment) => <span className="whitespace-nowrap font-mono">#{comment.id}</span>,
+    },
+    {
       key: 'snippet',
       label: translate('columns.snippet'),
       render: (comment) => (
@@ -89,6 +96,12 @@ export const CommentsTab: React.FC = () => {
       label: translate('columns.actions'),
       render: (comment) => (
         <div className="flex items-center gap-2">
+          <button
+            title={translate('actions.locate')}
+            aria-label={translate('actions.locate')}
+            onClick={() => setLocatingComment({ snippetId: comment.snippet_id, commentId: comment.id })}
+            className="rounded p-1 text-light-text-secondary hover:bg-light-hover dark:text-dark-text-secondary dark:hover:bg-dark-hover"
+          ><MapPin size={16} /></button>
           <button
             title={translate('actions.edit')}
             onClick={() => { setEditingComment(comment); setEditContent(comment.content); }}
@@ -162,6 +175,12 @@ export const CommentsTab: React.FC = () => {
         confirmLabel={t('action.delete')}
         cancelLabel={t('action.cancel')}
         variant="danger"
+      />
+
+      <SnippetViewModal
+        snippetId={locatingComment?.snippetId ?? null}
+        focusCommentId={locatingComment?.commentId ?? null}
+        onClose={() => setLocatingComment(null)}
       />
     </div>
   );

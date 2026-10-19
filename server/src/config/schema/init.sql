@@ -53,11 +53,23 @@ CREATE TABLE IF NOT EXISTS snippet_comments (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     snippet_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
+    parent_comment_id INTEGER REFERENCES snippet_comments (id) ON DELETE CASCADE,
     content TEXT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (snippet_id) REFERENCES snippets (id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS notifications (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    recipient_user_id INTEGER NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    actor_user_id INTEGER NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    snippet_id INTEGER NOT NULL REFERENCES snippets (id) ON DELETE CASCADE,
+    comment_id INTEGER NOT NULL REFERENCES snippet_comments (id) ON DELETE CASCADE,
+    type TEXT NOT NULL CHECK (type IN ('comment', 'reply')),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    read_at DATETIME
 );
 
 CREATE TABLE IF NOT EXISTS shared_snippets (
@@ -97,6 +109,8 @@ CREATE INDEX IF NOT EXISTS idx_categories_name ON categories (name);
 CREATE INDEX IF NOT EXISTS idx_fragments_snippet_id ON fragments (snippet_id);
 CREATE INDEX IF NOT EXISTS idx_snippet_comments_snippet_created ON snippet_comments (snippet_id, created_at, id);
 CREATE INDEX IF NOT EXISTS idx_snippet_comments_user_id ON snippet_comments (user_id);
+CREATE INDEX IF NOT EXISTS idx_snippet_comments_parent_id ON snippet_comments (parent_comment_id);
+CREATE INDEX IF NOT EXISTS idx_notifications_recipient_created ON notifications (recipient_user_id, created_at DESC, id DESC);
 
 CREATE INDEX IF NOT EXISTS idx_shared_snippets_snippet_id ON shared_snippets (snippet_id);
 

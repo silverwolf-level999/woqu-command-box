@@ -17,6 +17,7 @@ import { up_v1_9_0_cascade_delete } from "./migrations/20260124-cascade-delete.j
 import { up_v1_9_0_user_settings } from "./migrations/20260729-user-settings.js";
 import { migrateSqliteCategories } from "./migrations/20261019-category-catalog.js";
 import { migrateSqliteSnippetComments } from "./migrations/20261020-snippet-comments.js";
+import { migrateSqliteRepliesAndNotifications } from "./migrations/20261021-replies-notifications.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -114,6 +115,7 @@ function openSqliteDatabase() {
       up_v1_9_0_user_settings(db);
       migrateSqliteCategories(db);
       migrateSqliteSnippetComments(db);
+      migrateSqliteRepliesAndNotifications(db);
       Logger.debug("All migrations applied successfully");
     }
   } catch (error) {

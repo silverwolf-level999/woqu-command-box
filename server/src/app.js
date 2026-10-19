@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import { initializeDatabase, shutdownDatabase } from "./config/database.js";
 import snippetRoutes from "./routes/snippetRoutes.js";
 import snippetCommentRoutes from "./routes/snippetCommentRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import shareRoutes from "./routes/shareRoutes.js";
 import publicRoutes from "./routes/publicRoutes.js";
@@ -49,6 +50,7 @@ app.use(`${basePath}/api/auth`, authRoutes);
 app.use(`${basePath}/api/auth/oidc`, oidcRoutes);
 app.use(`${basePath}/api/keys`, authenticateToken, apiKeyRoutes);
 app.use(`${basePath}/api/settings`, authenticateToken, settingsRoutes);
+app.use(`${basePath}/api/notifications`, authenticateToken, notificationRoutes);
 app.use(`${basePath}/api/snippets`, authenticateApiKey, authenticateToken, snippetCommentRoutes);
 app.use(
   `${basePath}/api/snippets`,

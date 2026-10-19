@@ -17,8 +17,10 @@ const TABLES = [
   "shared_snippets",
   "api_keys",
   "user_settings",
+  "snippet_comments",
+  "notifications",
 ];
-const IDENTITY_TABLES = ["users", "snippets", "categories", "fragments", "api_keys"];
+const IDENTITY_TABLES = ["users", "snippets", "categories", "fragments", "api_keys", "snippet_comments", "notifications"];
 
 function formatTimestamp(date) {
   return date.toISOString().slice(0, 19).replace("T", " ");
@@ -97,6 +99,8 @@ function readSource(sqlite) {
     shared_snippets: all("shared_snippets"),
     api_keys: all("api_keys"),
     user_settings: all("user_settings"),
+    snippet_comments: all("snippet_comments"),
+    notifications: all("notifications"),
     sequences,
   };
 }
@@ -232,6 +236,45 @@ function buildRows(source) {
     ]);
   }
 
+  const validCommentIds = new Set(source.snippet_comments
+    .filter((comment) => snippetIds.has(comment.snippet_id) && userIds.has(comment.user_id))
+    .map((comment) => comment.id));
+  const snippetComments = [];
+  for (const comment of source.snippet_comments) {
+    if (!snippetIds.has(comment.snippet_id) || !userIds.has(comment.user_id)) {
+      skip("snippet_comments");
+      continue;
+    }
+    snippetComments.push([
+      comment.id,
+      comment.snippet_id,
+      comment.user_id,
+      comment.parent_comment_id && validCommentIds.has(comment.parent_comment_id) ? comment.parent_comment_id : null,
+      toText(comment.content, ""),
+      toTimestamp(comment.created_at, nowText),
+      toTimestamp(comment.updated_at, nowText),
+    ]);
+  }
+
+  const notifications = [];
+  for (const notification of source.notifications) {
+    if (!userIds.has(notification.recipient_user_id) || !userIds.has(notification.actor_user_id) ||
+        !snippetIds.has(notification.snippet_id) || !validCommentIds.has(notification.comment_id)) {
+      skip("notifications");
+      continue;
+    }
+    notifications.push([
+      notification.id,
+      notification.recipient_user_id,
+      notification.actor_user_id,
+      notification.snippet_id,
+      notification.comment_id,
+      toText(notification.type, "comment"),
+      toTimestamp(notification.created_at, nowText),
+      toTimestamp(notification.read_at),
+    ]);
+  }
+
   return {
     skipped,
     unownedSnippets,
@@ -292,6 +335,14 @@ function buildRows(source) {
       user_settings: {
         columns: ["user_id", "settings", "updated_at"],
         rows: userSettings,
+      },
+      snippet_comments: {
+        columns: ["id", "snippet_id", "user_id", "parent_comment_id", "content", "created_at", "updated_at"],
+        rows: snippetComments,
+      },
+      notifications: {
+        columns: ["id", "recipient_user_id", "actor_user_id", "snippet_id", "comment_id", "type", "created_at", "read_at"],
+        rows: notifications,
       },
     },
   };

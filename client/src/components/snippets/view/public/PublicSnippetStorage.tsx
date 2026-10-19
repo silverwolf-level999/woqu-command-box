@@ -6,7 +6,7 @@ import { initializeMonaco } from "../../../../utils/language/languageUtils";
 import { snippetService } from "../../../../service/snippetService";
 import SettingsModal from "../../../settings/SettingsModal";
 import { SearchAndFilter } from "../../../search/SearchAndFilter";
-import { UserDropdown } from "../../../auth/UserDropdown";
+import HeaderUserActions from "../../../common/layout/HeaderUserActions";
 import StorageHeader from "../common/StorageHeader";
 import PublicSnippetContentArea from "./PublicSnippetContentArea";
 
@@ -128,7 +128,7 @@ const PublicSnippetStorage: React.FC = () => {
       <div className="min-h-screen p-8 bg-light-bg dark:bg-dark-bg text-light-text dark:text-dark-text">
         <div className="flex items-start justify-between mb-4">
           <StorageHeader isPublicView={true} />
-          <UserDropdown />
+          <HeaderUserActions />
         </div>
 
         <SearchAndFilter

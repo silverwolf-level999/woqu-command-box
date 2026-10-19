@@ -1,16 +1,18 @@
 {
   "actions": {
     "delete": "删除评论",
-    "edit": "编辑评论"
+    "edit": "编辑评论",
+    "locate": "定位到评论"
   },
   "columns": {
     "actions": "操作",
     "author": "评论用户",
+    "commentId": "评论 ID",
     "content": "评论内容",
     "created": "发表时间",
     "snippet": "所属片段"
   },
-  "deleteMessage": "确定要删除这条评论吗？此操作无法撤销。",
+  "deleteMessage": "确定要删除这条评论吗？其下所有回复也会一并删除，此操作无法撤销。",
   "deleteTitle": "删除评论",
   "editTitle": "编辑评论",
   "empty": "暂时没有评论",

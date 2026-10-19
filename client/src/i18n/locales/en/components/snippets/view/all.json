@@ -14,13 +14,25 @@
     "characterCount": "{{count}} / 5000",
     "submit": "Comment",
     "signInToComment": "Sign in to comment",
+    "reply": "Reply",
+    "replyingTo": "Replying to {{username}}",
+    "replyPlaceholder": "Write a reply…",
+    "cancel": "Cancel",
     "loginRequired": "Please sign in to comment.",
     "save": "Save",
     "edit": "Edit comment",
     "delete": "Delete comment",
-    "confirmDelete": "Are you sure you want to delete this comment?",
+    "confirmDelete": "Delete this comment? All replies beneath it will also be deleted.",
     "saveFailed": "Failed to save comment.",
     "deleteFailed": "Failed to delete comment."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all as read",
+    "loading": "Loading notifications…",
+    "empty": "No notifications",
+    "comment": "{{username}} commented on your snippet “{{title}}”",
+    "reply": "{{username}} replied to your comment on “{{title}}”"
   },
   "snippetModal": {
     "confirmationModal": {

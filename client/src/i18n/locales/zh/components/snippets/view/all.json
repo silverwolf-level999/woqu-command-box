@@ -14,13 +14,25 @@
     "characterCount": "{{count}} / 5000",
     "submit": "发表评论",
     "signInToComment": "登录后发表评论",
+    "reply": "回复",
+    "replyingTo": "回复 {{username}}",
+    "replyPlaceholder": "写下你的回复…",
+    "cancel": "取消",
     "loginRequired": "请登录后发表评论。",
     "save": "保存",
     "edit": "编辑评论",
     "delete": "删除评论",
-    "confirmDelete": "确定删除这条评论吗？",
+    "confirmDelete": "确定删除这条评论吗？删除后，其下所有回复也会一并删除。",
     "saveFailed": "保存评论失败。",
     "deleteFailed": "删除评论失败。"
+  },
+  "notifications": {
+    "title": "通知",
+    "markAllRead": "全部标为已读",
+    "loading": "正在加载通知…",
+    "empty": "暂无通知",
+    "comment": "{{username}} 评论了你的片段「{{title}}」",
+    "reply": "{{username}} 回复了你的评论（「{{title}}」）"
   },
   "snippetModal": {
     "confirmationModal": {

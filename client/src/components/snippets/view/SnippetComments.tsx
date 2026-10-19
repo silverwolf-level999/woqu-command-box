@@ -10,9 +10,10 @@ interface SnippetCommentsProps {
   snippetId: string;
   isPublicView: boolean;
   canComment?: boolean;
+  focusCommentId?: number | null;
 }
 
-export const SnippetComments: React.FC<SnippetCommentsProps> = ({ snippetId, isPublicView, canComment: allowComment = true }) => {
+export const SnippetComments: React.FC<SnippetCommentsProps> = ({ snippetId, isPublicView, canComment: allowComment = true, focusCommentId = null }) => {
   const { t } = useTranslation("components/snippets/view/all");
   const { isAuthenticated, authConfig } = useAuth();
   const navigate = useNavigate();
@@ -20,6 +21,8 @@ export const SnippetComments: React.FC<SnippetCommentsProps> = ({ snippetId, isP
   const [content, setContent] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingContent, setEditingContent] = useState("");
+  const [replyingTo, setReplyingTo] = useState<number | null>(null);
+  const [replyContent, setReplyContent] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -41,6 +44,17 @@ export const SnippetComments: React.FC<SnippetCommentsProps> = ({ snippetId, isP
     loadComments();
   }, [loadComments]);
 
+  useEffect(() => {
+    const targetId = focusCommentId !== null
+      ? `comment-${focusCommentId}`
+      : window.location.hash.startsWith("#comment-") ? window.location.hash.slice(1) : null;
+    if (loading || !targetId) return;
+    const timer = window.setTimeout(() => {
+      document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [loading, comments, focusCommentId]);
+
   const handleCreate = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!content.trim() || saving) return;
@@ -52,6 +66,23 @@ export const SnippetComments: React.FC<SnippetCommentsProps> = ({ snippetId, isP
       setContent("");
     } catch (saveError: any) {
       setError(saveError?.status === 401 ? t("comments.loginRequired") : t("comments.saveFailed"));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleReply = async (event: React.FormEvent, parentCommentId: number) => {
+    event.preventDefault();
+    if (!replyContent.trim() || saving) return;
+    setSaving(true);
+    setError("");
+    try {
+      const reply = await snippetCommentService.create(snippetId, isPublicView, replyContent.trim(), parentCommentId);
+      setComments((current) => [...current, reply]);
+      setReplyContent("");
+      setReplyingTo(null);
+    } catch (replyError: any) {
+      setError(replyError?.status === 401 ? t("comments.loginRequired") : t("comments.saveFailed"));
     } finally {
       setSaving(false);
     }
@@ -77,7 +108,20 @@ export const SnippetComments: React.FC<SnippetCommentsProps> = ({ snippetId, isP
     setError("");
     try {
       await snippetCommentService.delete(snippetId, isPublicView, commentId);
-      setComments((current) => current.filter((comment) => comment.id !== commentId));
+      setComments((current) => {
+        const removed = new Set([commentId]);
+        let changed = true;
+        while (changed) {
+          changed = false;
+          current.forEach((comment) => {
+            if (comment.parent_comment_id && removed.has(comment.parent_comment_id) && !removed.has(comment.id)) {
+              removed.add(comment.id);
+              changed = true;
+            }
+          });
+        }
+        return current.filter((comment) => !removed.has(comment.id));
+      });
     } catch {
       setError(t("comments.deleteFailed"));
     }
@@ -99,10 +143,17 @@ export const SnippetComments: React.FC<SnippetCommentsProps> = ({ snippetId, isP
         <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">{t("comments.empty")}</p>
       ) : (
         <div className="space-y-4">
-          {comments.map((comment) => (
-            <article key={comment.id} className="rounded-lg bg-light-hover/40 p-3 dark:bg-dark-hover/40">
+          {comments.filter((comment) => !comment.parent_comment_id).map((root) => (
+            <div key={root.id} className="space-y-3">
+              {[root, ...comments.filter((comment) => comment.root_comment_id === root.id && comment.id !== root.id)].map((comment) => {
+                const isReply = Boolean(comment.parent_comment_id);
+                return (
+                  <article id={`comment-${comment.id}`} key={comment.id} className={`${isReply ? "ml-4 border-l-2 border-light-border pl-3 dark:border-dark-border sm:ml-6 sm:pl-4" : ""} rounded-lg bg-light-hover/40 p-3 dark:bg-dark-hover/40`}>
               <div className="mb-2 flex items-center justify-between gap-3 text-xs text-light-text-secondary dark:text-dark-text-secondary">
-                <span className="font-medium text-light-text dark:text-dark-text">{comment.username}</span>
+                <span className="font-medium text-light-text dark:text-dark-text">
+                  {comment.username}
+                  {comment.reply_to_username && <span className="ml-1 font-normal">{t("comments.replyingTo", { username: comment.reply_to_username })}</span>}
+                </span>
                 <time dateTime={comment.updated_at}>{new Date(comment.updated_at).toLocaleString()}</time>
               </div>
               {editingId === comment.id ? (
@@ -122,8 +173,10 @@ export const SnippetComments: React.FC<SnippetCommentsProps> = ({ snippetId, isP
               ) : (
                 <>
                   <p className="whitespace-pre-wrap break-words text-sm text-light-text dark:text-dark-text">{comment.content}</p>
-                  {comment.can_manage && (
+                  {(comment.can_manage || canComment) && (
                     <div className="mt-2 flex justify-end gap-1">
+                      {canComment && <button onClick={() => { setReplyingTo(replyingTo === comment.id ? null : comment.id); setReplyContent(""); }} className="rounded px-2 py-1 text-xs text-light-primary hover:bg-light-hover dark:text-dark-primary dark:hover:bg-dark-hover">{t("comments.reply")}</button>}
+                      {comment.can_manage && <>
                       <button
                         aria-label={t("comments.edit")}
                         onClick={() => { setEditingId(comment.id); setEditingContent(comment.content); }}
@@ -134,11 +187,23 @@ export const SnippetComments: React.FC<SnippetCommentsProps> = ({ snippetId, isP
                         onClick={() => handleDelete(comment.id)}
                         className="rounded p-1.5 text-red-600 hover:bg-light-hover dark:text-red-400 dark:hover:bg-dark-hover"
                       ><Trash2 size={14} /></button>
+                      </>}
                     </div>
                   )}
+                  {replyingTo === comment.id && canComment && <form onSubmit={(event) => handleReply(event, comment.id)} className="mt-3">
+                    <p className="mb-1 text-xs text-light-text-secondary dark:text-dark-text-secondary">{t("comments.replyingTo", { username: comment.username })}</p>
+                    <textarea value={replyContent} onChange={(event) => setReplyContent(event.target.value)} placeholder={t("comments.replyPlaceholder")} maxLength={5000} rows={2} className="w-full rounded-md border border-light-border bg-light-bg p-2 text-sm text-light-text placeholder:text-light-text-secondary/70 dark:border-dark-border dark:bg-dark-bg dark:text-dark-text" />
+                    <div className="mt-2 flex justify-end gap-2">
+                      <button type="button" onClick={() => setReplyingTo(null)} className="rounded px-2 py-1 text-sm text-light-text-secondary hover:bg-light-hover dark:text-dark-text-secondary dark:hover:bg-dark-hover">{t("comments.cancel")}</button>
+                      <button type="submit" disabled={saving || !replyContent.trim()} className="rounded bg-light-primary px-3 py-1 text-sm text-white disabled:opacity-50">{t("comments.reply")}</button>
+                    </div>
+                  </form>}
                 </>
               )}
-            </article>
+                  </article>
+                );
+              })}
+            </div>
           ))}
         </div>
       )}
