@@ -23,7 +23,7 @@ const AdminSelector: React.FC<AdminSelectorProps> = ({ selected }) => {
   return (
     <div className="flex items-center gap-3 text-sm text-light-text dark:text-dark-text">
       <div
-        className="flex gap-0.5 rounded-lg bg-light-surface dark:bg-dark-surface px-0.5 py-0.5 min-w-[400px]"
+        className="flex gap-0.5 rounded-lg bg-light-surface dark:bg-dark-surface px-0.5 py-0.5 min-w-[500px]"
         role="group"
       >
         {options.map(({ value, label, icon: Icon, route }) => (
